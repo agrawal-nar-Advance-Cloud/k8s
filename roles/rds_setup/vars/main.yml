@@ -17,6 +17,6 @@ securitygroup_name: "RDS_Security_Group"
 
 rds_instance_name: "dbInstance"
 
-rds_dbname: "backendDB"
+rds_dbname: "backend"
 
 subnet_group_name: "RDS_Subnet_Group"
