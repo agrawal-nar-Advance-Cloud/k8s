@@ -3,3 +3,5 @@
   user: root
   roles:
     - {role: 'setup__cluster', tags: 'create'}
+    - {role: 'metrics-server', tags: 'metrics'}
+    - {role: 'cluster-autoscaler', tags: 'autoscaler'}
