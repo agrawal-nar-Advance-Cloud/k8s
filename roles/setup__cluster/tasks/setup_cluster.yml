@@ -50,6 +50,27 @@
               --state {{ state_store }}
               --name {{ NAME }}"
   when: "'{{ NAME }}' not in clusters.stdout"
+
+# Setting authenticationTokenWebhook specs for metrics server
+- name: Setting authenticationTokenWebhook specs
+  shell: "KOPS_FEATURE_FLAGS=SpecOverrideFlag kops set cluster --name={{ NAME }} spec.kubelet.authenticationTokenWebhook=true --state {{ state_store }}"
+
+# Setting authorizationMode specs for metrics server
+- name: Setting authorizationMode specs
+  shell: "KOPS_FEATURE_FLAGS=SpecOverrideFlag kops set cluster --name={{ NAME }} spec.kubelet.authorizationMode=Webhook --state {{ state_store }}"
+
+# Editing cluster maxsize
+- name: get Instance group
+  shell: "kops get instancegroups nodes --state {{ state_store }} --name {{ NAME }} -o yaml > instancegroup.yml "
+
+# Editing cluster maxsize
+- name: Edit Instance group maxsize
+  shell: "yq m -i -x instancegroup.yml ./roles/setup__cluster/templates/clustersize.yml"
+
+# Applying Instances group changes
+- name: Applying Instance group changes
+  shell: "kops replace -f instancegroup.yml --state {{ state_store }} --name {{ NAME }}"
+
 # Deploy cluster
 - name: deploy the cluster
   command: "kops update cluster --name {{ NAME }} --state {{ state_store }}  --yes"
